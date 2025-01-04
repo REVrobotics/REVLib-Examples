@@ -18,7 +18,7 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.ClosedLoopConfig.ClosedLoopSlot;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
 public class Robot extends TimedRobot {
@@ -98,14 +98,14 @@ public class Robot extends TimedRobot {
        * for the closed loop controller.
        */
       double targetVelocity = SmartDashboard.getNumber("Target Velocity", 0);
-      closedLoopController.setReference(targetVelocity, ControlType.kVelocity, ClosedLoopSlot.kSlot1.value);
+      closedLoopController.setReference(targetVelocity, ControlType.kVelocity, ClosedLoopSlot.kSlot1);
     } else {
       /*
        * Get the target position from SmartDashboard and set it as the setpoint
        * for the closed loop controller.
        */
       double targetPosition = SmartDashboard.getNumber("Target Position", 0);
-      closedLoopController.setReference(targetPosition, ControlType.kPosition, ClosedLoopSlot.kSlot0.value);
+      closedLoopController.setReference(targetPosition, ControlType.kPosition, ClosedLoopSlot.kSlot0);
     }
   }
 
