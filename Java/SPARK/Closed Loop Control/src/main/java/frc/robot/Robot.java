@@ -10,13 +10,13 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.FeedbackSensor;
@@ -70,6 +70,7 @@ public class Robot extends TimedRobot {
         .d(0, ClosedLoopSlot.kSlot1)
         .outputRange(-1, 1, ClosedLoopSlot.kSlot1)
         .feedForward
+          // kV is now in Volts, so we multiply by the nominal voltage (12V)
           .kV(12.0 / 5767, ClosedLoopSlot.kSlot1);
 
     /*
