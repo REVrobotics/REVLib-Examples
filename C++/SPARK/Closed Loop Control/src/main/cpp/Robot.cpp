@@ -6,6 +6,7 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <rev/config/SparkMaxConfig.h>
+#include <rev/ClosedLoopTypes.h>
 
 Robot::Robot() {
   /*
@@ -27,7 +28,7 @@ Robot::Robot() {
    * feedback sensor as the primary encoder.
    */
   motorConfig.closedLoop
-      .SetFeedbackSensor(ClosedLoopConfig::FeedbackSensor::kPrimaryEncoder)
+      .SetFeedbackSensor(rev::spark::FeedbackSensor::kPrimaryEncoder)
       // Set PID values for position control. We don't need to pass a closed
       // loop slot, as it will default to slot 0.
       .P(0.1)
@@ -38,8 +39,10 @@ Robot::Robot() {
       .P(0.0001, ClosedLoopSlot::kSlot1)
       .I(0, ClosedLoopSlot::kSlot1)
       .D(0, ClosedLoopSlot::kSlot1)
-      .VelocityFF(1.0 / 5767, ClosedLoopSlot::kSlot1)
-      .OutputRange(-1, 1, ClosedLoopSlot::kSlot1);
+      .OutputRange(-1, 1, ClosedLoopSlot::kSlot1)
+      .feedForward
+        // kV is now in Volts, so we multiply by the nominal voltage (12V)
+        .kV(12.0 / 5767, ClosedLoopSlot::kSlot1);
 
   /*
    * Apply the configuration to the SPARK MAX.
@@ -51,8 +54,8 @@ Robot::Robot() {
    * the SPARK MAX loses power. This is useful for power cycles that may occur
    * mid-operation.
    */
-  m_motor.Configure(motorConfig, SparkBase::ResetMode::kResetSafeParameters,
-                    SparkBase::PersistMode::kPersistParameters);
+  m_motor.Configure(motorConfig, rev::ResetMode::kResetSafeParameters,
+                    rev::PersistMode::kPersistParameters);
 
   // Initialize dashboard values
   frc::SmartDashboard::SetDefaultNumber("Target Position", 0);
@@ -85,9 +88,9 @@ void Robot::TeleopPeriodic() {
      */
     double targetVelocity =
         frc::SmartDashboard::GetNumber("Target Velocity", 0);
-    m_closedLoopController.SetReference(targetVelocity,
-                                        SparkMax::ControlType::kVelocity,
-                                        ClosedLoopSlot::kSlot1);
+    m_closedLoopController.SetSetpoint(targetVelocity,
+                                       SparkMax::ControlType::kVelocity,
+                                       ClosedLoopSlot::kSlot1);
   } else {
     /*
      * Get the target position from SmartDashboard and set it as the
@@ -95,9 +98,9 @@ void Robot::TeleopPeriodic() {
      */
     double targetPosition =
         frc::SmartDashboard::GetNumber("Target Position", 0);
-    m_closedLoopController.SetReference(targetPosition,
-                                        SparkMax::ControlType::kPosition,
-                                        ClosedLoopSlot::kSlot0);
+    m_closedLoopController.SetSetpoint(targetPosition,
+                                       SparkMax::ControlType::kPosition,
+                                       ClosedLoopSlot::kSlot0);
   }
 }
 

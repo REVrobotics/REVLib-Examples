@@ -44,17 +44,17 @@ Robot::Robot() {
    * mid-operation.
    */
   m_leftLeader.Configure(globalConfig,
-                         SparkMax::ResetMode::kResetSafeParameters,
-                         SparkMax::PersistMode::kPersistParameters);
+                         rev::ResetMode::kResetSafeParameters,
+                         rev::PersistMode::kPersistParameters);
   m_leftFollower.Configure(leftFollowerConfig,
-                           SparkMax::ResetMode::kResetSafeParameters,
-                           SparkMax::PersistMode::kPersistParameters);
+                           rev::ResetMode::kResetSafeParameters,
+                           rev::PersistMode::kPersistParameters);
   m_rightLeader.Configure(rightLeaderConfig,
-                          SparkMax::ResetMode::kResetSafeParameters,
-                          SparkMax::PersistMode::kPersistParameters);
+                          rev::ResetMode::kResetSafeParameters,
+                          rev::PersistMode::kPersistParameters);
   m_rightFollower.Configure(rightFollowerConfig,
-                            SparkMax::ResetMode::kResetSafeParameters,
-                            SparkMax::PersistMode::kPersistParameters);
+                            rev::ResetMode::kResetSafeParameters,
+                            rev::PersistMode::kPersistParameters);
 }
 void Robot::RobotPeriodic() {
   // Display the applied output of the left and right side onto the dashboard

@@ -10,16 +10,16 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.ClosedLoopSlot;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.FeedbackSensor;
 
 public class Robot extends TimedRobot {
   private SparkMax motor;
@@ -68,19 +68,21 @@ public class Robot extends TimedRobot {
         .p(0.0001, ClosedLoopSlot.kSlot1)
         .i(0, ClosedLoopSlot.kSlot1)
         .d(0, ClosedLoopSlot.kSlot1)
-        .velocityFF(1.0 / 5767, ClosedLoopSlot.kSlot1)
-        .outputRange(-1, 1, ClosedLoopSlot.kSlot1);
+        .outputRange(-1, 1, ClosedLoopSlot.kSlot1)
+        .feedForward
+          // kV is now in Volts, so we multiply by the nominal voltage (12V)
+          .kV(12.0 / 5767, ClosedLoopSlot.kSlot1);
 
     motorConfig.closedLoop.maxMotion
         // Set MAXMotion parameters for position control. We don't need to pass
         // a closed loop slot, as it will default to slot 0.
-        .maxVelocity(1000)
+        .cruiseVelocity(1000)
         .maxAcceleration(1000)
-        .allowedClosedLoopError(1)
+        .allowedProfileError(1)
         // Set MAXMotion parameters for velocity control in slot 1
         .maxAcceleration(500, ClosedLoopSlot.kSlot1)
-        .maxVelocity(6000, ClosedLoopSlot.kSlot1)
-        .allowedClosedLoopError(1, ClosedLoopSlot.kSlot1);
+        .cruiseVelocity(6000, ClosedLoopSlot.kSlot1)
+        .allowedProfileError(1, ClosedLoopSlot.kSlot1);
 
     /*
      * Apply the configuration to the SPARK MAX.
@@ -110,7 +112,7 @@ public class Robot extends TimedRobot {
        * control type.
        */
       double targetVelocity = SmartDashboard.getNumber("Target Velocity", 0);
-      closedLoopController.setReference(targetVelocity, ControlType.kMAXMotionVelocityControl,
+      closedLoopController.setSetpoint(targetVelocity, ControlType.kMAXMotionVelocityControl,
           ClosedLoopSlot.kSlot1);
     } else {
       /*
@@ -119,7 +121,7 @@ public class Robot extends TimedRobot {
        * control type.
        */
       double targetPosition = SmartDashboard.getNumber("Target Position", 0);
-      closedLoopController.setReference(targetPosition, ControlType.kMAXMotionPositionControl,
+      closedLoopController.setSetpoint(targetPosition, ControlType.kMAXMotionPositionControl,
           ClosedLoopSlot.kSlot0);
     }
   }

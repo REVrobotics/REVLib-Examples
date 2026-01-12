@@ -20,9 +20,9 @@ Robot::Robot() {
   // Enable limit switches to stop the motor when they are closed
   motorConfig.limitSwitch
       .ForwardLimitSwitchType(LimitSwitchConfig::Type::kNormallyOpen)
-      .ForwardLimitSwitchEnabled(true)
+      .ForwardLimitSwitchTriggerBehavior(LimitSwitchConfig::Behavior::kStopMovingMotor)
       .ReverseLimitSwitchType(LimitSwitchConfig::Type::kNormallyOpen)
-      .ReverseLimitSwitchEnabled(true);
+      .ReverseLimitSwitchTriggerBehavior(LimitSwitchConfig::Behavior::kStopMovingMotor);
 
   // Set the soft limits to stop the motor at -50 and 50 rotations
   motorConfig.softLimit.ForwardSoftLimit(50)
@@ -40,8 +40,8 @@ Robot::Robot() {
    * the SPARK MAX loses power. This is useful for power cycles that may occur
    * mid-operation.
    */
-  m_motor.Configure(motorConfig, SparkMax::ResetMode::kResetSafeParameters,
-                    SparkMax::PersistMode::kNoPersistParameters);
+  m_motor.Configure(motorConfig, rev::ResetMode::kResetSafeParameters,
+                    rev::PersistMode::kNoPersistParameters);
 
   // Reset the position to 0 to start within the range of the soft limits
   m_encoder.SetPosition(0);

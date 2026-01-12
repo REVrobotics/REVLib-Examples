@@ -4,15 +4,16 @@
 
 package frc.robot;
 
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.LimitSwitchConfig.Behavior;
 import com.revrobotics.spark.config.LimitSwitchConfig.Type;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -46,9 +47,9 @@ public class Robot extends TimedRobot {
     // Enable limit switches to stop the motor when they are closed
     motorConfig.limitSwitch
         .forwardLimitSwitchType(Type.kNormallyOpen)
-        .forwardLimitSwitchEnabled(true)
+        .forwardLimitSwitchTriggerBehavior(Behavior.kStopMovingMotor)
         .reverseLimitSwitchType(Type.kNormallyOpen)
-        .reverseLimitSwitchEnabled(true);
+        .reverseLimitSwitchTriggerBehavior(Behavior.kStopMovingMotor);
 
     // Set the soft limits to stop the motor at -50 and 50 rotations
     motorConfig.softLimit
